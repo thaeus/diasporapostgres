@@ -1,5 +1,5 @@
 # vim:set ft=dockerfile:
-FROM debian:stretch-slim
+FROM debian:stretch-slim as stage
 
 RUN set -ex; \
 	if ! command -v gpg > /dev/null; then \
@@ -170,7 +170,14 @@ VOLUME /var/lib/postgresql/data
 
 COPY docker-entrypoint.sh /usr/local/bin/
 RUN ln -s usr/local/bin/docker-entrypoint.sh / # backwards compat
+
+FROM stage as stage2
+RUN adduser --gecos "" --disabled-login --home /home/diaspora diaspora
 ENTRYPOINT ["docker-entrypoint.sh"]
 
-EXPOSE 5432
+EXPOSE 5430
+
+
+
+
 CMD ["postgres"]
